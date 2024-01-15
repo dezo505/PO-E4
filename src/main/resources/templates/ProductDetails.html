@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #product-details {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px;
+        }
+
+        #left-panel {
+            flex: 1;
+            padding: 10px;
+        }
+
+        #right-panel {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: sticky;
+            top: 0;
+        }
+
+        #quantity-panel {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        #quantity-input {
+            width: 50px;
+            margin: 5px 0;
+            text-align: center;
+        }
+
+        #quantity-buttons {
+            display: flex;
+            margin-top: 5px;
+        }
+
+        .quantity-btn {
+            padding: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 0 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #add-to-cart-btn {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="product-details">
+    <!-- Left Panel -->
+    <div id="left-panel">
+        <h2 th:text="${product.name}"></h2>
+        <p th:text="'Cena: ' + ${product.price} + ' zł'"></p>
+        <p th:text="${product.description}"></p>
+        <button onclick="goBack()">Powrót do listy produktów</button>
+    </div>
+
+    <!-- Right Panel -->
+    <div id="right-panel">
+        <img th:src="@{/images/placeholder.png}" alt="Product Image" width="350" height="350"/>
+        <div id="quantity-panel">
+            <p th:text="${product.stockQuantity} + ' w magazynie'"></p>
+            <div id="quantity-buttons">
+                <button class="quantity-btn" onclick="decrementQuantity()">-</button>
+                <input id="quantity-input" type="number" min="1" th:value="1"/>
+                <button class="quantity-btn" onclick="incrementQuantity()">+</button>
+            </div>
+            <button id="add-to-cart-btn" onclick="addToCart()">Dodaj do koszyka</button>
+            <p id="error-message"></p>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function goBack() {
+        window.history.back();
+    }
+
+    function decrementQuantity() {
+        var quantityInput = document.getElementById('quantity-input');
+        var currentQuantity = parseInt(quantityInput.value);
+        if (currentQuantity > 1) {
+            quantityInput.value = currentQuantity - 1;
+        }
+    }
+
+    function incrementQuantity() {
+        var quantityInput = document.getElementById('quantity-input');
+        var currentQuantity = parseInt(quantityInput.value);
+        quantityInput.value = currentQuantity + 1;
+    }
+
+    function addToCart() {
+        var quantityInput = document.getElementById('quantity-input');
+        var quantity = parseInt(quantityInput.value);
+        var stockQuantity = parseInt('${product.stockQuantity}');
+        var errorMessage = document.getElementById('error-message');
+
+        if (quantity > stockQuantity) {
+            errorMessage.innerText = 'Nieprawidłowa ilość produktu.';
+        } else {
+            errorMessage.innerText = '';
+            alert('Produkt dodany do koszyka. Ilość: ' + quantity);
+        }
+    }
+</script>
+
+</body>
+</html>

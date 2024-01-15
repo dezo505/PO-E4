@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista Produktów</title>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #search-bar {
+      width: 100%;
+      background-color: #f2f2f2;
+      padding: 10px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      z-index: 1;
+    }
+
+    #main-panel {
+      display: flex;
+      margin-top: 60px;
+    }
+
+    #filter-panel {
+      width: 250px;
+      background-color: #f2f2f2;
+      padding: 20px;
+      box-sizing: border-box;
+      position: fixed;
+      left: 0;
+      z-index: 1;
+    }
+
+    #product-list {
+      flex: 1;
+      padding: 20px;
+      margin-left: 250px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      max-height: calc(100vh - 60px);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    div {
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Search bar -->
+<div id="search-bar">
+  <form th:action="@{/product/list}" method="get">
+    <input type="text" name="search" placeholder="Czego szukasz..." th:value="${search}">
+  </form>
+</div>
+
+<!-- Main panel -->
+<div id="main-panel">
+  <div id="filter-panel">
+    <form th:action="@{/product/list}" method="get">
+
+      <!-- Category list -->
+      <div style="margin-bottom: 10px;">
+        <label>Kategoria:</label>
+        <select name="category" style="width: 100%;">
+          <option value="" th:text="'Wszystkie kategorie'" th:selected="${categoryId == null}"></option>
+          <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${category.id == categoryId}"></option>
+        </select>
+      </div>
+
+      <!-- price range -->
+      <div style="margin-bottom: 10px;">
+        <label>Zakres cen:</label>
+        <input type="number" name="minPrice" placeholder="Min" th:value="${minPrice}">
+        <input type="number" name="maxPrice" placeholder="Max" th:value="${maxPrice}">
+        <div th:if="${minPrice != null && maxPrice != null && (minPrice > maxPrice || minPrice < 0 || maxPrice < 0)}" style="color: red; margin-top: 5px;">
+          <p>Nieprawidłowy zakres cen</p>
+        </div>
+      </div>
+
+      <!-- radio buttons -->
+      <div style="margin-bottom: 10px;">
+        <label>Dostępność:</label>
+        <div>
+          <input type="radio" name="availability" value="all" th:checked="${availability == null || availability == 'all'}"> Wszystkie
+        </div>
+        <div>
+          <input type="radio" name="availability" value="available" th:checked="${availability == 'available'}"> Dostępne
+        </div>
+      </div>
+
+      <!-- Filter button -->
+      <div style="margin-bottom: 10px; text-align: center;">
+        <button type="submit" style="width: 50%; padding: 10px;">Filtruj</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Product list panel -->
+  <div id="product-list">
+    <div th:each="product : ${products}" class="product-card">
+      <div style="display: flex; align-items: center;">
+
+        <img th:src="@{/images/placeholder.png}" alt="Zdjęcie produktu" width="150" height="150" style="margin-right: 10px;"/>
+
+        <div style="flex: 1;">
+          <a th:href="@{/product/details/{id}(id=${product.id})}">
+            <h3 th:text="${product.name}" style="color: black; text-decoration: none;"></h3>
+          </a>
+          <p th:text="${#strings.length(product.description) > 255 ? #strings.substring(product.description, 0, 255) + '...' : product.description}" style="color: #888;"></p>
+        </div>
+
+        <div style="height: 100%; border-left: 1px solid #ddd; margin: 0 10px;"></div>
+
+        <div style="text-align: center; padding-top: 10px; flex-shrink: 0;">
+          <p th:text="${#numbers.formatDecimal(product.price, 1, 'POINT', 2, 'COMMA')} + ' zł'"></p>
+          <p th:text="${product.stockQuantity > 0 ? 'Dostępne' : 'Niedostępne'}" th:style="${product.stockQuantity > 0 ? 'color: green;' : 'color: red;'}"></p>
+          <button th:if="${product.stockQuantity > 0}" th:onclick="'addToCart(' + ${product.id} + ')'" >Dodaj do koszyka</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  function addToCart(productId) {
+    alert('Produkt dodany do koszyka: ' + productId);
+  }
+</script>
+</body>
+</html>
