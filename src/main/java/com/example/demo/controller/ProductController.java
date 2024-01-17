@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Kontroler obsługujący żądania związane z produktami.
+ */
 @Controller
 public class ProductController {
 
@@ -26,6 +29,13 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Wyświetla szczegóły produktu o określonym ID.
+     *
+     * @param id    ID produktu.
+     * @param model Model Spring, umożliwiający przekazywanie danych do widoku.
+     * @return Widok zawierający szczegóły produktu.
+     */
     @GetMapping("/product/details/{id}")
     public String showProductDetails(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
@@ -35,6 +45,17 @@ public class ProductController {
         return "ProductDetails";
     }
 
+    /**
+     * Wyświetla listę produktów z opcją filtrowania.
+     *
+     * @param search       Tekst do wyszukania w nazwach produktów.
+     * @param minPrice     Minimalna cena produktu.
+     * @param maxPrice     Maksymalna cena produktu.
+     * @param categoryId   ID kategorii produktów.
+     * @param availability Dostępność produktu ("all", "available", null).
+     * @param model        Model Spring, umożliwiający przekazywanie danych do widoku.
+     * @return Widok zawierający listę produktów z opcją filtrowania.
+     */
     @GetMapping("/product/list")
     public String showProductList(
             @RequestParam(name = "search", required = false) String search,
@@ -59,6 +80,3 @@ public class ProductController {
         return "ProductList";
     }
 }
-
-
-

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Serwis do obsługi operacji na danych kategorii.
+ */
 @Service
 public class CategoryService {
 
@@ -17,8 +20,12 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    /**
+     * Pobiera wszystkie kategorie.
+     *
+     * @return Lista wszystkich kategorii.
+     */
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 }
-

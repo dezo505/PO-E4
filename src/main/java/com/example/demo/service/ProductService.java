@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Serwis do obsługi operacji na danych produktów.
+ */
 @Service
 public class ProductService {
 
@@ -19,13 +22,28 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * Pobiera produkt o określonym ID.
+     *
+     * @param id ID produktu.
+     * @return Produkt o podanym ID lub null, jeśli nie istnieje.
+     */
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Filtruje produkty na podstawie różnych kryteriów.
+     *
+     * @param search      Tekst do wyszukania w nazwach produktów.
+     * @param minPrice    Minimalna cena produktu.
+     * @param maxPrice    Maksymalna cena produktu.
+     * @param categoryId  ID kategorii produktów.
+     * @param availability Dostępność produktu ("all", "available", null).
+     * @return Lista produktów spełniających kryteria filtrowania.
+     */
     public List<Product> filterProducts(String search, BigDecimal minPrice, BigDecimal maxPrice, Long categoryId, String availability) {
         List<Product> allProducts = productRepository.findAll();
-
 
         return allProducts.stream()
                 .filter(product -> (search == null || product.getName().toLowerCase().contains(search.toLowerCase())) &&
