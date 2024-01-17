@@ -26,4 +26,13 @@ public class Category {
      * Nazwa kategorii.
      */
     private String name;
+
+    /**
+     * Konstruktor klasy Category przyjmujący nazwę kategorii.
+     *
+     * @param name Nazwa kategorii.
+     */
+    public Category(String name) {
+        this.name = name;
+    }
 }
