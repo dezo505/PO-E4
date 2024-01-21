@@ -82,6 +82,15 @@ class ProductServiceTest {
     }
 
     @Test
+    void filterProducts_WithEmptySearchInput_ShouldReturnAllProducts() {
+        // Act
+        List<Product> filteredProducts = productService.filterProducts("", null, null, null, null);
+
+        // Assert
+        assertThat(filteredProducts).hasSize(4);
+    }
+
+    @Test
     void filterProducts_WithMinPriceInput_ShouldReturnFilteredProducts() {
         // Act
         List<Product> filteredProducts = productService.filterProducts(null, BigDecimal.valueOf(500.0), null, null, null);
@@ -109,6 +118,15 @@ class ProductServiceTest {
     }
 
     @Test
+    void filterProducts_WithMinMaxPriceInvalidInput_ShouldReturnNoProducts() {
+        // Act
+        List<Product> filteredProducts = productService.filterProducts(null, BigDecimal.valueOf(600.0), BigDecimal.valueOf(400.0), null, null);
+
+        // Assert
+        assertThat(filteredProducts).hasSize(0);
+    }
+
+    @Test
     void filterProducts_WithCategoryIdInput_ShouldReturnFilteredProducts() {
         // Act
         List<Product> filteredProducts = productService.filterProducts(null, null, null, 1L, null);
@@ -127,12 +145,21 @@ class ProductServiceTest {
     }
 
     @Test
-    void filterProducts_WithAllAvailabilityInput_ShouldReturnFilteredProducts() {
+    void filterProducts_WithAllAvailabilityInput_ShouldReturnAllProducts() {
         // Act
         List<Product> filteredProducts = productService.filterProducts(null, null, null, null, "all");
 
         // Assert
         assertThat(filteredProducts).hasSize(4);
+    }
+
+    @Test
+    void filterProducts_WithInvalidAvailabilityInput_ShouldReturnNoProducts() {
+        // Act
+        List<Product> filteredProducts = productService.filterProducts(null, null, null, null, "wfdaf");
+
+        // Assert
+        assertThat(filteredProducts).hasSize(0);
     }
 
     @Test
